@@ -22,8 +22,7 @@ const products = {
         success(res, response, 200, "Get all products success");
       });
     } catch (err) {
-      // res.json(err);
-      failed(err);
+      failed(res, 404, err);
     }
   },
   getDetail: (req, res) => {
@@ -35,10 +34,10 @@ const products = {
           success(res, result, 200, "Get details product success");
         })
         .catch((err) => {
-          res.json(err);
+          failed(res, 404, err);
         });
     } catch (err) {
-      console.log(err);
+      failed(res, 404, err);
     }
   },
   insert: (req, res) => {
@@ -50,10 +49,10 @@ const products = {
           success(res, result, 201, "Insert data product success");
         })
         .catch((err) => {
-          res.json(err);
+          failed(res, 400, err);
         });
     } catch (err) {
-      console.log(err);
+      failed(res, 400, err);
     }
   },
   update: (req, res) => {
@@ -66,25 +65,25 @@ const products = {
           success(res, result, 200, "Update data product success");
         })
         .catch((err) => {
-          res.json(err);
+          failed(res, 400, err);
         });
     } catch (error) {
-      console.log(error);
+      failed(res, 400, err);
     }
   },
   destroy: (req, res) => {
     try {
       const id = req.params.id;
       productsModel
-        .delete(id)
+        .destroy(id)
         .then((result) => {
           success(res, result, 200, "Delete data product success");
         })
         .catch((err) => {
-          res.json(err);
+          failed(res, 404, err);
         });
     } catch (err) {
-      console.log(err);
+      failed(res, 404, err);
     }
   },
 };

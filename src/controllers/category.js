@@ -1,19 +1,19 @@
-const usersModel = require("../models/users_model");
+const categoryModel = require("../models/category_model");
 const { success, failed } = require("../helpers/response");
 
-const users = {
+const category = {
   getList: (req, res) => {
     try {
       const query = req.query;
       const search = query.search === undefined ? "" : query.search;
       const field = query.field === undefined ? "id" : query.field;
       const typeSort = query.sort === undefined ? "ASC" : query.sort;
-      const limit = query.limit === undefined ? "5" : query.limit;
+      const limit = query.limit === undefined ? "2" : query.limit;
       const offset = query.page === undefined || query.page == 1 ? 0 : (query.page - 1) * limit;
-      usersModel
+      categoryModel
         .getList(search, field, typeSort, limit, offset)
         .then(async (result) => {
-          const allData = await usersModel.getAll();
+          const allData = await categoryModel.getAll();
           const response = {
             data: result,
             totalPage: Math.ceil(allData.length / limit),
@@ -33,7 +33,7 @@ const users = {
   getDetail: (req, res) => {
     try {
       const id = req.params.id;
-      usersModel
+      categoryModel
         .getDetail(id)
         .then((result) => {
           success(res, result, 200, "Get details user success");
@@ -48,7 +48,7 @@ const users = {
   insert: (req, res) => {
     try {
       const body = req.body;
-      usersModel
+      categoryModel
         .insert(body)
         .then((result) => {
           success(res, result, 201, "Create data user success");
@@ -64,7 +64,7 @@ const users = {
     try {
       const id = req.params.id;
       const body = req.body;
-      usersModel
+      categoryModel
         .update(id, body)
         .then((result) => {
           success(res, result, 200, "Update data users success");
@@ -72,14 +72,14 @@ const users = {
         .catch((err) => {
           failed(res, 400, err);
         });
-    } catch (err) {
+    } catch (error) {
       failed(res, 400, err);
     }
   },
   destroy: (req, res) => {
     try {
       const id = req.params.id;
-      usersModel
+      categoryModel
         .destroy(id)
         .then((result) => {
           success(res, result, 200, "Delete data users success");
@@ -93,4 +93,4 @@ const users = {
   },
 };
 
-module.exports = users;
+module.exports = category;
