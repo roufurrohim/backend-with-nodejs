@@ -1,15 +1,16 @@
-const usersModel = require("../models/users_model");
-const { success, failed } = require("../helpers/response");
+const bcrypt = require('bcrypt');
+const usersModel = require('../models/users_model');
+const { success, failed, resLogin } = require('../helpers/response');
 
 const users = {
   getList: (req, res) => {
     try {
-      const query = req.query;
-      const search = query.search === undefined ? "" : query.search;
-      const field = query.field === undefined ? "id" : query.field;
-      const typeSort = query.sort === undefined ? "ASC" : query.sort;
-      const limit = query.limit === undefined ? "5" : query.limit;
-      const offset = query.page === undefined || query.page == 1 ? 0 : (query.page - 1) * limit;
+      const { query } = req;
+      const search = query.search === undefined ? '' : query.search;
+      const field = query.field === undefined ? 'id' : query.field;
+      const typeSort = query.sort === undefined ? 'ASC' : query.sort;
+      const limit = query.limit === undefined ? '5' : query.limit;
+      const offset = query.page === undefined || query.page === 1 ? 0 : (query.page - 1) * limit;
       usersModel
         .getList(search, field, typeSort, limit, offset)
         .then(async (result) => {
@@ -17,11 +18,11 @@ const users = {
           const response = {
             data: result,
             totalPage: Math.ceil(allData.length / limit),
-            search: search,
-            limit: limit,
+            search,
+            limit,
             page: req.query.page,
           };
-          success(res, response, 200, "Get all users success");
+          success(res, response, 200, 'Get all users success');
         })
         .catch((err) => {
           failed(res, 404, err);
@@ -32,11 +33,11 @@ const users = {
   },
   getDetail: (req, res) => {
     try {
-      const id = req.params.id;
+      const { id } = req.params;
       usersModel
         .getDetail(id)
         .then((result) => {
-          success(res, result, 200, "Get details user success");
+          success(res, result, 200, 'Get details user success');
         })
         .catch((err) => {
           failed(res, 404, err);
@@ -47,11 +48,37 @@ const users = {
   },
   insert: (req, res) => {
     try {
-      const body = req.body;
+      const { body } = req;
+      const hash = bcrypt.hashSync(body.password, 10);
       usersModel
-        .insert(body)
+        .insert(body, hash)
         .then((result) => {
-          success(res, result, 201, "Create data user success");
+          success(res, result, 201, 'Create data user success');
+        })
+        .catch((err) => {
+          failed(res, 400, err);
+        });
+    } catch (err) {
+      failed(res, 400, err);
+    }
+  },
+  login: (req, res) => {
+    try {
+      const { body } = req;
+      usersModel
+        .login(body)
+        .then((result) => {
+          if (result <= 0) {
+            resLogin(res, 'Email salah');
+          } else {
+            const hash = result[0].password;
+            const pwd = bcrypt.compareSync(body.password, hash);
+            if (pwd === true) {
+              success(res, result, 200, 'Login success');
+            } else {
+              resLogin(res, 'Password salah');
+            }
+          }
         })
         .catch((err) => {
           failed(res, 400, err);
@@ -62,12 +89,12 @@ const users = {
   },
   update: (req, res) => {
     try {
-      const id = req.params.id;
-      const body = req.body;
+      const { id } = req.params;
+      const { body } = req;
       usersModel
         .update(id, body)
         .then((result) => {
-          success(res, result, 200, "Update data users success");
+          success(res, result, 200, 'Update data users success');
         })
         .catch((err) => {
           failed(res, 400, err);
@@ -78,11 +105,11 @@ const users = {
   },
   destroy: (req, res) => {
     try {
-      const id = req.params.id;
+      const { id } = req.params;
       usersModel
         .destroy(id)
         .then((result) => {
-          success(res, result, 200, "Delete data users success");
+          success(res, result, 200, 'Delete data users success');
         })
         .catch((err) => {
           failed(res, 404, err);

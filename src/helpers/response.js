@@ -1,41 +1,47 @@
 const response = {
   success: (res, data, code, message) => {
-    const response = {
+    const resp = {
       success: true,
-      data: data,
-      code: code,
-      message: message,
+      data,
+      code,
+      message,
     };
-    res.json(response);
+    res.json(resp);
+  },
+  resLogin: (res, message) => {
+    const r = {
+      message,
+    };
+    res.json(r);
   },
   failed: (res, code, err) => {
     if (code === 400) {
-      const response = {
+      const respon = {
         success: false,
         data: null,
-        code: code,
+        code,
         error: err,
-        message: "Error on client side (input false)",
+        message: 'Error on client side (input false)',
       };
-      res.json(response);
+      res.json(respon);
     } else if (code === 404) {
-      const response = {
+      const respons = {
         success: false,
         data: null,
-        code: code,
+        code,
         error: err,
-        message: "Data not found",
+        message: 'Data not found',
       };
-      res.json(response);
+      res.json(respons);
     } else if (code === 502) {
-      const response = {
+      const re = {
         success: false,
         data: null,
-        code: code,
+        code,
         error: err,
-        message: "Invalid response from another request",
+        message: 'Invalid response from another request',
       };
-      res.json(response);
+      res.json(re);
     }
   },
 };

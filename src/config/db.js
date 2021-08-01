@@ -1,12 +1,12 @@
-const mysql = require("mysql2");
+const mysql = require('mysql2');
 // const connection = require("../helpers//");
-const { DB_USERNAME, DB_PASSWORD } = require("../helpers/env");
+const { DB_USERNAME, DB_PASSWORD } = require('../helpers/env');
 
 const db = mysql.createConnection({
-  host: "localhost",
+  host: 'localhost',
   user: DB_USERNAME,
   password: DB_PASSWORD,
-  database: "db_coffee_shop",
+  database: 'db_coffee_shop',
 });
 
 db.connect((err) => {
@@ -16,7 +16,7 @@ db.connect((err) => {
     };
     console.log(er);
   } else {
-    console.log("Connection Success");
+    console.log('Connection Success');
   }
 });
 
