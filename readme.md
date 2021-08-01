@@ -29,3 +29,12 @@ npm install express body-parser dot-env mysql2 nodemon
 
 
 **Standard API**
+
+[click me](https://github.com/roufurrohim/backend-with-nodejs/blob/master/api-documents.json)
+
+
+**.env example**
+```
+DB_USERNAME=
+DB_PASSWORD=
+```
